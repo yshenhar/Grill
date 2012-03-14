@@ -33,6 +33,7 @@ class RataterParser {
     prefix(TokenType.NAME, new NameParselet())
     prefix(TokenType.NUMBER, new LiteralParser())
     infixLeft(TokenType.PLUS, Precedence.SUM)
+    infixLeft(TokenType.ASTERISK, Precedence.PRODUCT)
   }
 
   function parse() : List<Expr> {
