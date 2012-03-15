@@ -276,6 +276,7 @@ class Lexer implements TokenReader {
     "_cost" -> COST,
     "_book" -> BOOK,
     "+" -> PLUS,
+    "*" -> ASTERISK,
     "=" -> ASSIGN
   }
 }

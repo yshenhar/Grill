@@ -36,6 +36,7 @@ class RataterParser {
     prefix(TokenType.NUMBER, new LiteralParser())
     infixLeft(TokenType.PLUS, Precedence.SUM)
     infixLeft(TokenType.EQEQ, Precedence.CONDITIONAL)
+    infixLeft(TokenType.ASTERISK, Precedence.PRODUCT)
   }
 
   function parse() : List<Expr> {
@@ -54,8 +55,7 @@ class RataterParser {
     if (match(RATEROUTINE)) return parseRoutine()
     if (match(LEFT_BRACE)) return parseBlock()
     if (match(IF)) return parseIfStatement()
-    //if (match(RIGHT_BRACE)) return parseEOF()
-
+   
     return parseExpression()
   }
 
@@ -70,6 +70,7 @@ class RataterParser {
     var line = consume(NAME)
     consume(DOT)
     var rateRoutineCode = consume(NAME)
+
 
     match(LINE)
     var blk = parseBlock()
@@ -100,7 +101,7 @@ class RataterParser {
       expressions.add(parseStatement())
       if(lookAhead(LINE)) consume()
     }
-    //consume()
+    
     return new SequenceExpr(expressions)
   }
 
@@ -190,7 +191,7 @@ class RataterParser {
 
     // Get the queued token.
     return mRead.get(distance)
- }
+  }
   
   private function lookAhead(expectedType: TokenType) : boolean {
     return lookAhead(0).Type == expectedType

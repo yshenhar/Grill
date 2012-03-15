@@ -59,7 +59,7 @@ class RataterSourceVisitor implements ExprVisitor {
   }
 
   override function visit(ifExpr: IfExpr) {
-    buf.append("\n\t")
+    buf.append("\n").append("\t".repeat(indent))
     buf.append("IF ").append("(").append(ifExpr.Condition).append(")")
     visit(ifExpr.Block as SequenceExpr) // TODO Handle this better
   }
