@@ -7,6 +7,8 @@ uses ratater.ast.Expr
 uses java.util.Map
 uses java.util.HashMap
 uses ratater.ast.SequenceExpr
+uses ratater.ast.NothingExpr
+uses ratater.ast.IfExpr
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,6 +35,7 @@ class RataterParser {
     prefix(TokenType.NAME, new NameParselet())
     prefix(TokenType.NUMBER, new LiteralParser())
     infixLeft(TokenType.PLUS, Precedence.SUM)
+    infixLeft(TokenType.EQEQ, Precedence.CONDITIONAL)
   }
 
   function parse() : List<Expr> {
@@ -48,10 +51,17 @@ class RataterParser {
 
 
   private function parseStatement() : Expr {
-    if (match(RATEROUTINE)) parseRoutine()
-    if (match(LEFT_BRACE)) parseBlock()
-    
+    if (match(RATEROUTINE)) return parseRoutine()
+    if (match(LEFT_BRACE)) return parseBlock()
+    if (match(IF)) return parseIfStatement()
+    //if (match(RIGHT_BRACE)) return parseEOF()
+
     return parseExpression()
+  }
+
+  function parseEOF(): Expr {
+    //consume(RIGHT_BRACE)
+    return new NothingExpr()
   }
 
   function parseRoutine() : Expr {
@@ -61,7 +71,6 @@ class RataterParser {
     consume(DOT)
     var rateRoutineCode = consume(NAME)
 
-
     match(LINE)
     var blk = parseBlock()
     var routine = new RateRoutineExpr(line.Text, rateRoutineCode.Text, blk)
@@ -69,6 +78,18 @@ class RataterParser {
     return routine
   }
 
+  private function parseIfStatement() : Expr {
+    var condition = parseCondition()
+    return new IfExpr(condition, parseBlock())
+  }
+
+  private function parseCondition() : Expr {
+    consume(LEFT_PAREN)
+    var condition = parseExpression()
+    consume(RIGHT_PAREN)
+
+    return condition
+  }
 
   private function parseBlock() : Expr {
     consume(LEFT_BRACE)
@@ -79,7 +100,7 @@ class RataterParser {
       expressions.add(parseStatement())
       if(lookAhead(LINE)) consume()
     }
-    
+    //consume()
     return new SequenceExpr(expressions)
   }
 
@@ -169,7 +190,7 @@ class RataterParser {
 
     // Get the queued token.
     return mRead.get(distance)
-  }
+ }
   
   private function lookAhead(expectedType: TokenType) : boolean {
     return lookAhead(0).Type == expectedType

@@ -271,6 +271,7 @@ class Lexer implements TokenReader {
   private static var keywords : Map<String, TokenType> = {
     "if" -> IF,
     "else" -> ELSE,
+    "==" -> EQEQ,
     "rateroutine" -> RATEROUTINE,
     "_cost" -> COST,
     "_book" -> BOOK,

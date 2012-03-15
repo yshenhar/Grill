@@ -9,6 +9,8 @@ uses ratater.ast.OperatorExpr
 uses ratater.ast.RateRoutineExpr
 uses ratater.ast.LiteralExpr
 uses ratater.ast.SequenceExpr
+uses ratater.ast.NothingExpr
+uses ratater.ast.IfExpr
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,8 +50,17 @@ class RataterSourceVisitor implements ExprVisitor {
   override function visit(seq: SequenceExpr) {
     indent++
     buf.append(" {")
-    seq.Expressions.each( \ expr -> expr.accept(this))
+    seq.Expressions.each(\expr -> expr.accept(this))
     indent--
     buf.append("\n").append("\t".repeat(indent)).append("}")
+  }
+
+  override function visit(expr: NothingExpr) {
+  }
+
+  override function visit(ifExpr: IfExpr) {
+    buf.append("\n\t")
+    buf.append("IF ").append("(").append(ifExpr.Condition).append(")")
+    visit(ifExpr.Block as SequenceExpr) // TODO Handle this better
   }
 }

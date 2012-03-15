@@ -13,4 +13,6 @@ interface ExprVisitor {
   function visit(expr : OperatorExpr)
   function visit(expr : RateRoutineExpr)
   function visit(expr : SequenceExpr)
+  function visit(expr : NothingExpr)
+  function visit(expr : IfExpr)
 }
